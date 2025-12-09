@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PetBites — Makanan &amp; Camilan Hewan</title>
+  <meta name="description" content="Toko online makanan hewan: makanan, camilan, dan perlengkapan." />
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* small custom tweaks */
+    .glass { background: rgba(255,255,255,0.6); backdrop-filter: blur(6px); }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-amber-50 via-white to-rose-50 text-gray-800">
+  <header class="max-w-6xl mx-auto p-6 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <div class="w-12 h-12 bg-amber-400 rounded-lg flex items-center justify-center text-white font-bold shadow-lg">PB</div>
+      <div>
+        <h1 class="text-xl font-extrabold">PetBites</h1>
+        <p class="text-sm text-gray-600">Makanan &amp; camilan berkualitas untuk hewan kesayangan</p>
+      </div>
+    </div>
+    <nav class="space-x-4 hidden md:block">
+      <a href="#produk" class="text-sm hover:underline">Produk</a>
+      <a href="#tentang" class="text-sm hover:underline">Tentang</a>
+      <a href="#kontak" class="text-sm hover:underline">Kontak</a>
+    </nav>
+    <div class="flex items-center gap-3">
+      <a href="#kontak" class="px-4 py-2 bg-rose-500 text-white rounded-lg shadow hover:bg-rose-600">Hubungi</a>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto p-6">
+    <!-- Hero -->
+    <section class="grid md:grid-cols-2 gap-8 items-center mb-12">
+      <div>
+        <h2 class="text-4xl font-extrabold mb-4">Makanan hewan sehat & lezat — dikirim cepat</h2>
+        <p class="text-gray-700 mb-6">PetBites menghadirkan pilihan makanan dan camilan untuk anjing, kucing, dan hewan kecil. Foto produk cukup disimpan di folder <code>/images</code> bernama <code>3.jpeg</code>, <code>4.jpeg</code>, dst.</p>
+        <div class="flex gap-3">
+          <a href="#produk" class="px-6 py-3 bg-amber-400 rounded-lg font-semibold">Lihat Produk</a>
+          <a href="#kontak" class="px-6 py-3 border border-amber-400 rounded-lg">Pesan Sekarang</a>
+        </div>
+      </div>
+      <div class="rounded-2xl overflow-hidden shadow-lg">
+        <img src="/images/3.jpeg" alt="Produk unggulan" class="w-full h-72 object-cover" />
+      </div>
+    </section>
+
+    <!-- Produk -->
+    <section id="produk" class="mb-12">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-2xl font-bold">Produk Populer</h3>
+        <div class="text-sm text-gray-600">Menampilkan gambar dari <code>/images/3.jpeg</code> ke atas</div>
+      </div>
+
+      <!-- Controls: ubah jumlah gambar di script di bawah -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="gallery"></div>
+    </section>
+
+    <!-- Tentang -->
+    <section id="tentang" class="mb-12 p-6 glass rounded-2xl">
+      <h4 class="text-xl font-bold mb-2">Tentang PetBites</h4>
+      <p class="text-gray-700">Kami berfokus pada makanan hewan berkualitas dengan bahan yang transparan. Website ini adalah template statis yang mudah dideploy ke GitHub Pages. Edit variabel <code>startImage</code> dan <code>endImage</code> di akhir file untuk menyesuaikan jumlah foto.</p>
+    </section>
+
+    <!-- Kontak -->
+    <section id="kontak" class="mb-20">
+      <h4 class="text-xl font-bold mb-4">Kontak & Pemesanan</h4>
+      <p class="mb-4">Ingin pesan atau bertanya? Klik tombol di bawah untuk mengirim email atau WhatsApp (ganti nomor di link kalau perlu).</p>
+      <div class="flex gap-3">
+        <a href="mailto:info@petbites.example?subject=Pemesanan%20PetBites" class="px-5 py-3 bg-amber-400 rounded-lg text-white">Email</a>
+        <a href="https://wa.me/6281234567890?text=Saya%20tertarik%20membeli%20produk" target="_blank" class="px-5 py-3 border rounded-lg">WhatsApp</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-white border-t py-6 mt-12">
+    <div class="max-w-6xl mx-auto text-center text-sm text-gray-600">© <span id="year"></span> PetBites — Dibuat dengan ✨ untuk hewan kesayangan</div>
+  </footer>
+
+  <!-- Modal Lightbox -->
+  <div id="lightbox" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-40">
+    <div class="max-w-3xl w-full p-4">
+      <div class="bg-white rounded-lg overflow-hidden">
+        <div class="flex justify-end p-2">
+          <button id="closeLightbox" class="text-gray-600 text-xl px-3">×</button>
+        </div>
+        <div class="p-4">
+          <img id="lightboxImg" src="" alt="" class="w-full h-auto rounded-lg" />
+          <div id="lightboxCaption" class="mt-3 text-gray-700"></div>
+          <div class="mt-4 flex gap-3">
+            <a id="buyMail" href="#" class="px-4 py-2 bg-rose-500 text-white rounded-lg">Pesan via Email</a>
+            <a id="buyWA" href="#" target="_blank" class="px-4 py-2 border rounded-lg">Pesan via WA</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // show year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // -- GALLERY GENERATOR --
+    // Ubah nilai endImage sesuai jumlah foto yang kamu punya.
+    const startImage = 3; // dimulai dari 3.jpeg sesuai permintaan
+    const endImage = 10;  // <-- ganti angka ini ke angka terakhir fotomu, misal 8 jika hanya 3..8
+
+    const gallery = document.getElementById('gallery');
+
+    for (let i = startImage; i <= endImage; i++) {
+      const imgPath = `/images/${i}.jpeg`;
+      const card = document.createElement('div');
+      card.className = 'bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition';
+      card.innerHTML = `
+        <button class="w-full text-left" data-img="${imgPath}" data-title="Produk #${i}">
+          <div class="h-48 w-full overflow-hidden bg-gray-100">
+            <img src="${imgPath}" alt="Produk ${i}" class="w-full h-full object-cover" onerror="this.style.opacity=0.3; this.parentElement.innerHTML='<div class=\'p-6 text-center text-sm text-gray-500\'>Foto tidak ditemukan: ${i}.jpeg</div>'" />
+          </div>
+          <div class="p-4">
+            <h5 class="font-semibold">Nama Produk ${i}</h5>
+            <p class="text-sm text-gray-600 mt-1">Deskripsi singkat, berat, atau rasa.</p>
+            <div class="mt-3 flex items-center justify-between">
+              <div class="text-lg font-bold">Rp 45.000</div>
+              <div class="text-sm text-gray-500">Stok: 99+</div>
+            </div>
+          </div>
+        </button>`;
+
+      gallery.appendChild(card);
+    }
+
+    // Lightbox behavior
+    document.querySelectorAll('#gallery button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const img = btn.dataset.img;
+        const title = btn.dataset.title;
+        document.getElementById('lightboxImg').src = img;
+        document.getElementById('lightboxCaption').textContent = title;
+        document.getElementById('buyMail').href = `mailto:info@petbites.example?subject=Pemesanan%20${encodeURIComponent(title)}`;
+        document.getElementById('buyWA').href = `https://wa.me/6281234567890?text=Saya%20ingin%20memesan%20${encodeURIComponent(title)}`;
+        document.getElementById('lightbox').classList.remove('hidden');
+        document.getElementById('lightbox').classList.add('flex');
+      });
+    });
+
+    document.getElementById('closeLightbox').addEventListener('click', () => {
+      document.getElementById('lightbox').classList.add('hidden');
+      document.getElementById('lightbox').classList.remove('flex');
+    });
+
+    // Close lightbox when clicking outside card
+    document.getElementById('lightbox').addEventListener('click', (e) => {
+      if (e.target.id === 'lightbox') {
+        document.getElementById('closeLightbox').click();
+      }
+    });
+  </script>
+</body>
+</html>
