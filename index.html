@@ -1,167 +1,163 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PetBites — Makanan & Camilan Hewan</title>
-  <meta name="description" content="Toko online makanan hewan: makanan, camilan, dan perlengkapan." />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>.glass{background:rgba(255,255,255,0.6);backdrop-filter:blur(6px);}</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PetShop - Makanan Hewan</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            background: #f3f4f6;
+        }
+
+        /* Lightbox */
+        #lightbox {
+            display: none;
+        }
+
+        #lightbox.active {
+            display: flex;
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-amber-50 via-white to-rose-50 text-gray-800">
-  <header class="max-w-6xl mx-auto p-6 flex items-center justify-between">
-    <div class="flex items-center gap-4">
-      <div class="w-12 h-12 bg-amber-400 rounded-lg flex items-center justify-center text-white font-bold shadow-lg">PB</div>
-      <div>
-        <h1 class="text-xl font-extrabold">PetBites</h1>
-        <p class="text-sm text-gray-600">Makanan & camilan berkualitas untuk hewan kesayangan</p>
-      </div>
-    </div>
-    <nav class="space-x-4 hidden md:block">
-      <a href="#produk" class="text-sm hover:underline">Produk</a>
-      <a href="#tentang" class="text-sm hover:underline">Tentang</a>
-      <a href="#kontak" class="text-sm hover:underline">Kontak</a>
+
+<body class="pb-24">
+
+    <!-- Navbar -->
+    <nav class="bg-gray-900 text-white p-4 shadow-md">
+        <h1 class="text-xl font-bold">PetShop Gallery</h1>
+        <p class="text-gray-300 text-sm -mt-1">Makanan & Perlengkapan Hewan</p>
     </nav>
-    <a href="#kontak" class="px-4 py-2 bg-rose-500 text-white rounded-lg shadow hover:bg-rose-600">Hubungi</a>
-  </header>
 
-  <main class="max-w-6xl mx-auto p-6">
-    <section class="grid md:grid-cols-2 gap-8 items-center mb-12">
-      <div>
-        <h2 class="text-4xl font-extrabold mb-4">Makanan hewan sehat & lezat — dikirim cepat</h2>
-        <p class="text-gray-700 mb-6">PetBites menghadirkan pilihan makanan dan camilan untuk anjing, kucing, dan hewan kecil. Foto produk cukup disimpan di folder <code>/images</code> bernama <code>3.jpeg</code> hingga <code>24.jpeg</code>.</p>
-        <div class="flex gap-3">
-          <a href="#produk" class="px-6 py-3 bg-amber-400 rounded-lg font-semibold">Lihat Produk</a>
-          <a href="#kontak" class="px-6 py-3 border border-amber-400 rounded-lg">Pesan Sekarang</a>
-        </div>
-      </div>
-      <div class="rounded-2xl overflow-hidden shadow-lg">
-        <img src="images/3.jpeg" class="w-full h-72 object-cover" />
-      </div>
-    </section>
+    <!-- Gallery -->
+    <section id="gallery" class="p-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></section>
 
-    <section id="produk" class="mb-12">
-      <div class="flex items-center justify-between mb-6">
-        <h3 class="text-2xl font-bold">Produk Populer</h3>
-        <div class="text-sm text-gray-600">Gambar otomatis dari 3.jpeg sampai 24.jpeg</div>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="gallery"></div>
-    </section>
-
-    <section id="tentang" class="mb-12 p-6 glass rounded-2xl">
-      <h4 class="text-xl font-bold mb-2">Tentang PetBites</h4>
-      <p class="text-gray-700">Kami menyediakan makanan hewan premium dengan bahan berkualitas dan harga terjangkau.</p>
-    </section>
-
-    <section id="kontak" class="mb-20">
-      <h4 class="text-xl font-bold mb-4">Kontak & Pemesanan</h4>
-      <p class="mb-4">Hubungi kami untuk pemesanan atau pertanyaan lebih lanjut.</p>
-      <div class="flex gap-3">
-        <a href="mailto:info@petbites.example?subject=Pemesanan%20PetBites" class="px-5 py-3 bg-amber-400 rounded-lg text-white">Email</a>
-        <a href="https://wa.me/6281234567890?text=Saya%20tertarik%20membeli%20produk" target="_blank" class="px-5 py-3 border rounded-lg">WhatsApp</a>
-      </div>
-    </section>
-  </main>
-
-  <footer class="bg-white border-t py-6 mt-12">
-    <div class="max-w-6xl mx-auto text-center text-sm text-gray-600">© <span id="year"></span> PetBites — Dibuat dengan cinta</div>
-  </footer>
-
-  <div id="lightbox" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-40">
-    <div class="max-w-3xl w-full p-4">
-      <div class="bg-white rounded-lg overflow-hidden">
-        <div class="flex justify-end p-2"><button id="closeLightbox" class="text-gray-600 text-xl px-3">×</button></div>
-        <div class="p-4">
-          <img id="lightboxImg" class="w-full h-auto rounded-lg" />
-          <div id="lightboxCaption" class="mt-3 text-gray-700"></div>
-          <div class="mt-4 flex gap-3">
-            <a id="buyMail" href="#" class="px-4 py-2 bg-rose-500 text-white rounded-lg">Pesan via Email</a>
-            <a id="buyWA" href="#" target="_blank" class="px-4 py-2 border rounded-lg">Pesan via WA</a>
-          </div>
-        </div>
-      </div>
+    <!-- Lightbox -->
+    <div id="lightbox" class="fixed inset-0 bg-black bg-opacity-75 justify-center items-center z-50">
+        <img id="lightbox-img" src="" class="max-h-[90%] rounded-lg shadow-xl">
     </div>
-  </div>
 
-<script>
- document.getElementById('year').textContent = new Date().getFullYear();
- const startImage = 3;
- const endImage = 24;	
- const gallery = document.getElementById('gallery');
+    <!-- Checkout Popup -->
+    <div id="checkoutBox"
+        class="fixed inset-0 bg-black bg-opacity-60 hidden justify-center items-center z-50">
+        <div class="bg-white w-80 p-5 rounded-xl shadow-xl">
+            <h2 class="text-xl font-bold mb-2">Checkout Produk</h2>
+            <p class="text-gray-700">Produk: <span id="coName"></span></p>
+            <p class="text-gray-700 mt-1">Harga: <span id="coPrice"></span></p>
 
- for (let i = startImage; i <= endImage; i++) {
-   const imgPath = `images/${i}.jpeg`;
-   const card = document.createElement('div');
-   card.className = 'bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition';
-   card.innerHTML = `
-     <button class="w-full text-left" data-img="${imgPath}" data-title="Produk #${i}">
-       <div class="h-48 w-full overflow-hidden bg-gray-100">
-         <img src="${imgPath}" class="w-full h-full object-cover" onerror="this.style.opacity=0.3; this.parentElement.innerHTML='<div class=\'p-6 text-center text-sm text-gray-500\'>Foto tidak ditemukan: ${i}.jpeg</div>'" />
-       </div>
-       <div class="p-4">
-         <h5 class="font-semibold">Nama Produk ${i}</h5>
-         <p class="text-sm text-gray-600 mt-1">Deskripsi singkat produk.</p>
-         <div class="mt-3 flex items-center justify-between">
-           <div class="text-lg font-bold">Rp 45.000</div>
-           <div class="text-sm text-gray-500">Stok: 99+</div>
-         </div>
-       </div>
-     </button>`;
-   gallery.appendChild(card);
- }
+            <div class="flex justify-between mt-5">
+                <button onclick="closeCheckout()"
+                    class="px-4 py-2 bg-gray-300 rounded-lg">Batal</button>
 
- document.querySelectorAll('#gallery button').forEach(btn => {
-   btn.addEventListener('click', () => {
-     const img = btn.dataset.img;
-     const title = btn.dataset.title;
-     document.getElementById('lightboxImg').src = img;
-     document.getElementById('lightboxCaption').textContent = title;
-     document.getElementById('buyMail').href = `mailto:info@petbites.example?subject=Pemesanan%20${encodeURIComponent(title)}`;
-     document.getElementById('buyWA').href = `https://wa.me/6281234567890?text=Saya%20ingin%20memesan%20${encodeURIComponent(title)}`;
-     document.getElementById('lightbox').classList.remove('hidden');
-     document.getElementById('lightbox').classList.add('flex');
-   });
- });
-
- document.getElementById('closeLightbox').addEventListener('click', () => {
-   document.getElementById('lightbox').classList.add('hidden');
-   document.getElementById('lightbox').classList.remove('flex');
- });
-
- document.getElementById('lightbox').addEventListener('click', (e) => {
-   if (e.target.id === 'lightbox') document.getElementById('closeLightbox').click();
- });
-</script>
-  <!-- CHECKOUT POPUP -->
-  <div id="checkoutBox" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white w-96 rounded-2xl shadow-xl p-6">
-      <h2 class="text-xl font-bold mb-4">Checkout</h2>
-      <p id="checkoutItem" class="mb-3 text-gray-700"></p>
-      <p class="text-gray-800 font-semibold mb-4">Total: <span id="checkoutPrice">Rp 0</span></p>
-      <div class="flex gap-3 mt-4">
-        <a id="checkoutWA" href="#" target="_blank" class="flex-1 bg-green-500 text-white py-2 rounded-lg text-center font-semibold">Pesan via WA</a>
-        <button onclick="closeCheckout()" class="flex-1 bg-gray-300 py-2 rounded-lg font-semibold">Batal</button>
-      </div>
+                <a id="btnWA" target="_blank"
+                    class="px-4 py-2 bg-green-600 text-white rounded-lg">Pesan WA</a>
+            </div>
+        </div>
     </div>
-  </div>
 
-<script>
-function openCheckout(name) {
-  const price = 45000;
-  document.getElementById('checkoutItem').innerText = name;
-  document.getElementById('checkoutPrice').innerText = 'Rp ' + price.toLocaleString('id-ID');
-  document.getElementById('checkoutWA').href = `https://wa.me/6281234567890?text=Saya%20ingin%20checkout%20${encodeURIComponent(name)}%20dengan%20harga%20Rp%2045.000`;
-  const box = document.getElementById('checkoutBox');
-  box.classList.remove('hidden');
-  box.classList.add('flex');
-}
-function closeCheckout() {
-  const box = document.getElementById('checkoutBox');
-  box.classList.add('hidden');
-  box.classList.remove('flex');
-}
-</script>
+    <script>
+        // Daftar nama produk kamu (24 item)
+        const productNames = [
+            "Royal Canin Kitten 2kg",
+            "Whiskas Adult 1.4kg",
+            "Me-O Rich 2kg",
+            "Cat Scratcher Tower 3 Tingkat",
+            "Pasir Kucing Clumping 10L",
+            "Pedigree Adult 3kg",
+            "Pro Plan Puppy 2.5kg",
+            "KONG Classic Toy (M)",
+            "Dog Leash Retractable 5m",
+            "Aquarium Starter 60L",
+            "Makanan Ikan Flake 250g",
+            "Aquarium Filter Internal",
+            "Live Plants Aquarium Pack",
+            "Fish Heater Adjustable 50W",
+            "Bird Perch Natural Wood",
+            "Bird Cage Medium",
+            "Seed Mix Burung 1kg",
+            "Pet Nail Clipper",
+            "Pet Carrier Portable (S)",
+            "Automatic Waterer 2L",
+            "Pet ID Tag Stainless",
+            "Reptile Heat Lamp 60W",
+            "Shampoo Anti Kutu 250ml",
+            "Training Pads 30pcs"
+        ];
+
+        // Gambar kamu mulai dari 3 → 26 (24 gambar)
+        const startImg = 3;
+        const gallery = document.getElementById("gallery");
+
+        productNames.forEach((name, index) => {
+            const imgNumber = startImg + index;
+            const imgPath = `images/${imgNumber}.jpeg`;
+
+            const card = document.createElement("div");
+            card.className =
+                "bg-white rounded-2xl overflow-hidden shadow hover:shadow-xl transition cursor-pointer";
+
+            card.innerHTML = `
+                <div onclick="openLightbox('${imgPath}')">
+                    <div class="h-48 w-full overflow-hidden bg-gray-100">
+                        <img src="${imgPath}" class="w-full h-full object-cover"
+                        onerror="
+                            this.style.display='none';
+                            this.parentElement.innerHTML='<div class=\'p-6 text-center text-gray-500 text-sm\'>Foto ${imgNumber}.jpeg tidak ditemukan</div>'
+                        ">
+                    </div>
+
+                    <div class="p-4">
+                        <h2 class="text-lg font-semibold text-gray-800">${name}</h2>
+
+                        <p class="text-sm text-gray-600 mt-1">Produk hewan premium.</p>
+
+                        <div class="mt-3 flex items-center justify-between">
+                            <span class="text-xl font-bold text-gray-800">Rp 45.000</span>
+                            <button onclick="event.stopPropagation(); checkout('${name}', 'Rp 45.000')"
+                                class="px-3 py-1 bg-green-600 text-white rounded-lg text-sm">
+                                Checkout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            gallery.appendChild(card);
+        });
+
+        // Lightbox Functions
+        function openLightbox(src) {
+            document.getElementById("lightbox-img").src = src;
+            document.getElementById("lightbox").classList.add("active");
+        }
+
+        document.getElementById("lightbox").addEventListener("click", () => {
+            document.getElementById("lightbox").classList.remove("active");
+        });
+
+        // Checkout
+        function checkout(name, price) {
+            document.getElementById("coName").innerText = name;
+            document.getElementById("coPrice").innerText = price;
+
+            const pesan = encodeURIComponent(
+                `Halo, saya ingin memesan:\nProduk: ${name}\nHarga: ${price}`
+            );
+
+            document.getElementById("btnWA").href =
+                `https://wa.me/6280000000000?text=${pesan}`;
+
+            document.getElementById("checkoutBox").classList.remove("hidden");
+        }
+
+        function closeCheckout() {
+            document.getElementById("checkoutBox").classList.add("hidden");
+        }
+    </script>
 
 </body>
 </html>
+
