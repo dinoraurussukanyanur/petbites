@@ -1,163 +1,507 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PetShop - Makanan Hewan</title>
-
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <style>
-        body {
-            background: #f3f4f6;
-        }
-
-        /* Lightbox */
-        #lightbox {
-            display: none;
-        }
-
-        #lightbox.active {
-            display: flex;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PetShop - Makanan Hewan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #f3f4f6; }
+    #lightbox { display: none; }
+    #lightbox.active { display: flex; }
+    .cart-items { max-height: 38vh; overflow-y: auto; }
+    @media print {
+      body * { visibility: hidden; }
+      #receipt-printable, #receipt-printable * { visibility: visible; }
+      #receipt-printable { position: absolute; left: 0; top: 0; width: 100%; }
+    }
+  </style>
 </head>
+<body class="pb-24 font-sans">
 
-<body class="pb-24">
-
-    <!-- Navbar -->
-    <nav class="bg-gray-900 text-white p-4 shadow-md">
-        <h1 class="text-xl font-bold">PetShop Gallery</h1>
-        <p class="text-gray-300 text-sm -mt-1">Makanan & Perlengkapan Hewan</p>
-    </nav>
-
-    <!-- Gallery -->
-    <section id="gallery" class="p-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></section>
-
-    <!-- Lightbox -->
-    <div id="lightbox" class="fixed inset-0 bg-black bg-opacity-75 justify-center items-center z-50">
-        <img id="lightbox-img" src="" class="max-h-[90%] rounded-lg shadow-xl">
+  <!-- NAVBAR -->
+  <nav class="bg-gray-900 text-white p-4 shadow-md flex items-center justify-between">
+    <div>
+      <h1 class="text-xl font-bold">PetShop Gallery</h1>
+      <p class="text-gray-300 text-sm -mt-1">Makanan & Perlengkapan Hewan</p>
     </div>
 
-    <!-- Checkout Popup -->
-    <div id="checkoutBox"
-        class="fixed inset-0 bg-black bg-opacity-60 hidden justify-center items-center z-50">
-        <div class="bg-white w-80 p-5 rounded-xl shadow-xl">
-            <h2 class="text-xl font-bold mb-2">Checkout Produk</h2>
-            <p class="text-gray-700">Produk: <span id="coName"></span></p>
-            <p class="text-gray-700 mt-1">Harga: <span id="coPrice"></span></p>
+    <div class="flex items-center gap-4">
+      <div id="userArea" class="text-sm"></div>
 
-            <div class="flex justify-between mt-5">
-                <button onclick="closeCheckout()"
-                    class="px-4 py-2 bg-gray-300 rounded-lg">Batal</button>
+      <button id="btnCartToggle" class="relative">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4" />
+        </svg>
+        <span id="cartCount" class="absolute -top-2 -right-3 bg-red-500 text-white text-xs rounded-full px-1">0</span>
+      </button>
 
-                <a id="btnWA" target="_blank"
-                    class="px-4 py-2 bg-green-600 text-white rounded-lg">Pesan WA</a>
-            </div>
+      <button id="btnAuth" class="px-3 py-1 bg-green-600 text-white rounded-lg text-sm">Login / Register</button>
+    </div>
+  </nav>
+
+  <!-- MAIN GRID -->
+  <div class="p-5 grid grid-cols-1 md:grid-cols-4 gap-6">
+
+    <!-- GALLERY -->
+    <section id="gallery" class="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></section>
+
+    <!-- SIDEBAR (CART) -->
+    <aside class="bg-white rounded-2xl p-4 shadow md:sticky top-6">
+      <h2 class="text-lg font-semibold mb-2">Keranjang</h2>
+
+      <div class="cart-items mb-3">
+        <div id="cartList" class="space-y-3 text-sm text-gray-700">
+          <!-- items injected here -->
         </div>
+      </div>
+
+      <div class="flex justify-between items-center font-bold mb-3">
+        <span>Total:</span>
+        <span id="cartTotal">Rp 0</span>
+      </div>
+
+      <div class="flex gap-2">
+        <button id="btnClearCart" class="flex-1 px-3 py-2 bg-gray-200 rounded-lg">Kosongkan</button>
+        <button id="btnCheckoutCart" class="flex-1 px-3 py-2 bg-green-600 text-white rounded-lg">Checkout</button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox" class="fixed inset-0 bg-black bg-opacity-75 justify-center items-center z-50">
+    <img id="lightbox-img" src="" class="max-h-[90%] rounded-lg shadow-xl">
+  </div>
+
+  <!-- CHECKOUT POPUP -->
+  <div id="checkoutBox" class="fixed inset-0 bg-black bg-opacity-60 hidden justify-center items-center z-50">
+    <div class="bg-white w-96 p-5 rounded-xl shadow-xl">
+      <h2 class="text-xl font-bold mb-2">Checkout</h2>
+
+      <div id="checkoutContent" class="text-sm text-gray-700"></div>
+
+      <div class="mt-4 text-sm text-gray-600">
+        <p>Metode pesan: WhatsApp</p>
+      </div>
+
+      <div class="flex justify-between mt-5">
+        <button onclick="closeCheckout()" class="px-4 py-2 bg-gray-300 rounded-lg">Batal</button>
+        <a id="btnWA" target="_blank" class="px-4 py-2 bg-green-600 text-white rounded-lg">Pesan WA</a>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // Daftar nama produk kamu (24 item)
-        const productNames = [
-            "Royal Canin Kitten 2kg",
-            "Whiskas Adult 1.4kg",
-            "Me-O Rich 2kg",
-            "Cat Scratcher Tower 3 Tingkat",
-            "Pasir Kucing Clumping 10L",
-            "Pedigree Adult 3kg",
-            "Pro Plan Puppy 2.5kg",
-            "KONG Classic Toy (M)",
-            "Dog Leash Retractable 5m",
-            "Aquarium Starter 60L",
-            "Makanan Ikan Flake 250g",
-            "Aquarium Filter Internal",
-            "Live Plants Aquarium Pack",
-            "Fish Heater Adjustable 50W",
-            "Bird Perch Natural Wood",
-            "Bird Cage Medium",
-            "Seed Mix Burung 1kg",
-            "Pet Nail Clipper",
-            "Pet Carrier Portable (S)",
-            "Automatic Waterer 2L",
-            "Pet ID Tag Stainless",
-            "Reptile Heat Lamp 60W",
-            "Shampoo Anti Kutu 250ml",
-            "Training Pads 30pcs"
-        ];
+  <!-- AUTH MODAL (Login / Register) -->
+  <div id="authModal" class="fixed inset-0 bg-black bg-opacity-60 hidden justify-center items-center z-50">
+    <div class="bg-white w-96 p-5 rounded-xl shadow-xl">
+      <div class="flex justify-between items-center mb-4">
+        <h3 id="authTitle" class="text-lg font-semibold">Login</h3>
+        <button onclick="closeAuth()" class="text-gray-500">✕</button>
+      </div>
 
-        // Gambar kamu mulai dari 3 → 26 (24 gambar)
-        const startImg = 3;
-        const gallery = document.getElementById("gallery");
+      <div id="authForms">
+        <!-- Login Form -->
+        <form id="loginForm" class="space-y-3">
+          <input id="loginEmail" type="email" placeholder="Email" required class="w-full p-2 border rounded" />
+          <input id="loginPassword" type="password" placeholder="Password" required class="w-full p-2 border rounded" />
+          <div class="flex gap-2">
+            <button type="submit" class="flex-1 px-3 py-2 bg-green-600 text-white rounded">Login</button>
+            <button type="button" onclick="showRegister()" class="flex-1 px-3 py-2 bg-gray-200 rounded">Register</button>
+          </div>
+        </form>
 
-        productNames.forEach((name, index) => {
-            const imgNumber = startImg + index;
-            const imgPath = `images/${imgNumber}.jpeg`;
+        <!-- Register Form -->
+        <form id="registerForm" class="space-y-3 hidden">
+          <input id="regName" type="text" placeholder="Nama" required class="w-full p-2 border rounded" />
+          <input id="regEmail" type="email" placeholder="Email" required class="w-full p-2 border rounded" />
+          <input id="regPassword" type="password" placeholder="Password" required class="w-full p-2 border rounded" />
+          <div class="flex gap-2">
+            <button type="submit" class="flex-1 px-3 py-2 bg-green-600 text-white rounded">Daftar</button>
+            <button type="button" onclick="showLogin()" class="flex-1 px-3 py-2 bg-gray-200 rounded">Login</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
-            const card = document.createElement("div");
-            card.className =
-                "bg-white rounded-2xl overflow-hidden shadow hover:shadow-xl transition cursor-pointer";
+  <!-- RECEIPT (hidden for printing) -->
+  <div id="receipt-printable" class="hidden p-6">
+    <div class="max-w-md mx-auto bg-white p-6 rounded shadow">
+      <h2 class="text-xl font-bold mb-2">Struk Pesanan</h2>
+      <div id="receiptContent" class="text-sm text-gray-700"></div>
+      <div class="mt-4">
+        <p>Terima kasih telah berbelanja di PetShop.</p>
+      </div>
+    </div>
+  </div>
 
-            card.innerHTML = `
-                <div onclick="openLightbox('${imgPath}')">
-                    <div class="h-48 w-full overflow-hidden bg-gray-100">
-                        <img src="${imgPath}" class="w-full h-full object-cover"
-                        onerror="
-                            this.style.display='none';
-                            this.parentElement.innerHTML='<div class=\'p-6 text-center text-gray-500 text-sm\'>Foto ${imgNumber}.jpeg tidak ditemukan</div>'
-                        ">
-                    </div>
+  <!-- TOAST -->
+  <div id="toast" class="fixed bottom-6 right-6 hidden bg-gray-800 text-white px-4 py-2 rounded shadow"></div>
 
-                    <div class="p-4">
-                        <h2 class="text-lg font-semibold text-gray-800">${name}</h2>
+  <script>
+    /* ---------- Data produk ---------- */
+    const productNames = [
+      "Royal Canin Kitten 2kg",
+      "Whiskas Adult 1.4kg",
+      "Me-O Rich 2kg",
+      "Cat Scratcher Tower 3 Tingkat",
+      "Pasir Kucing Clumping 10L",
+      "Pedigree Adult 3kg",
+      "Pro Plan Puppy 2.5kg",
+      "KONG Classic Toy (M)",
+      "Dog Leash Retractable 5m",
+      "Aquarium Starter 60L",
+      "Makanan Ikan Flake 250g",
+      "Aquarium Filter Internal",
+      "Live Plants Aquarium Pack",
+      "Fish Heater Adjustable 50W",
+      "Bird Perch Natural Wood",
+      "Bird Cage Medium",
+      "Seed Mix Burung 1kg",
+      "Pet Nail Clipper",
+      "Pet Carrier Portable (S)",
+      "Automatic Waterer 2L",
+      "Pet ID Tag Stainless",
+      "Reptile Heat Lamp 60W",
+      "Shampoo Anti Kutu 250ml",
+      "Training Pads 30pcs"
+    ];
+    const startImg = 3; // images/3.jpeg ... images/26.jpeg
+    const defaultPrice = 45000; // all items Rp 45.000 (contoh)
 
-                        <p class="text-sm text-gray-600 mt-1">Produk hewan premium.</p>
+    /* ---------- Utils ---------- */
+    function formatRp(num) {
+      if (!num) return 'Rp 0';
+      const s = Number(num).toLocaleString('id-ID');
+      return 'Rp ' + s;
+    }
 
-                        <div class="mt-3 flex items-center justify-between">
-                            <span class="text-xl font-bold text-gray-800">Rp 45.000</span>
-                            <button onclick="event.stopPropagation(); checkout('${name}', 'Rp 45.000')"
-                                class="px-3 py-1 bg-green-600 text-white rounded-lg text-sm">
-                                Checkout
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
+    function showToast(msg, time = 2000) {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.classList.remove('hidden');
+      setTimeout(() => t.classList.add('hidden'), time);
+    }
 
-            gallery.appendChild(card);
+    /* ---------- State (localStorage-backed) ---------- */
+    function loadCart() {
+      try { return JSON.parse(localStorage.getItem('ps_cart') || '[]'); } catch { return []; }
+    }
+    function saveCart(c) { localStorage.setItem('ps_cart', JSON.stringify(c)); updateCartUI(); }
+
+    function loadUsers() {
+      try { return JSON.parse(localStorage.getItem('ps_users') || '[]'); } catch { return []; }
+    }
+    function saveUsers(u) { localStorage.setItem('ps_users', JSON.stringify(u)); }
+
+    function loadSession() {
+      try { return JSON.parse(localStorage.getItem('ps_session') || 'null'); } catch { return null; }
+    }
+    function saveSession(s) { localStorage.setItem('ps_session', JSON.stringify(s)); updateUserUI(); }
+
+    /* ---------- Gallery render ---------- */
+    const gallery = document.getElementById('gallery');
+    productNames.forEach((name, index) => {
+      const imgNumber = startImg + index;
+      const imgPath = `images/${imgNumber}.jpeg`; // place your images here
+      const card = document.createElement('div');
+      card.className = "bg-white rounded-2xl overflow-hidden shadow hover:shadow-xl transition cursor-pointer";
+
+      card.innerHTML = `
+        <div class="h-48 w-full overflow-hidden bg-gray-100" onclick="openLightbox('${imgPath}')">
+          <img src="${imgPath}"
+            class="w-full h-full object-cover"
+            onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'p-6 text-center text-gray-500 text-sm\\'>Foto ${imgNumber}.jpeg tidak ditemukan</div>'">
+        </div>
+        <div class="p-4">
+          <h2 class="text-lg font-semibold text-gray-800">${name}</h2>
+          <p class="text-sm text-gray-600 mt-1">Produk hewan premium.</p>
+          <div class="mt-3 flex items-center justify-between">
+            <span class="text-xl font-bold text-gray-800">${formatRp(defaultPrice)}</span>
+            <button class="px-3 py-1 bg-green-600 text-white rounded-lg text-sm add-to-cart">Add</button>
+          </div>
+        </div>
+      `;
+
+      // prevent add button from triggering outer onclick
+      card.querySelector('.add-to-cart').addEventListener('click', (e) => {
+        e.stopPropagation();
+        addToCart(index, 1);
+      });
+
+      gallery.appendChild(card);
+    });
+
+    /* ---------- Lightbox ---------- */
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox').classList.add('active');
+    }
+    document.getElementById('lightbox').addEventListener('click', () => {
+      document.getElementById('lightbox').classList.remove('active');
+    });
+
+    /* ---------- Cart operations ---------- */
+    function getCartTotal(cart) {
+      return cart.reduce((sum, it) => sum + (it.price * it.qty), 0);
+    }
+
+    function updateCartUI() {
+      const cart = loadCart();
+      const cartList = document.getElementById('cartList');
+      cartList.innerHTML = '';
+      if (cart.length === 0) {
+        cartList.innerHTML = '<div class="text-gray-500">Keranjang kosong.</div>';
+      } else {
+        cart.forEach((item, idx) => {
+          const el = document.createElement('div');
+          el.className = 'flex items-center justify-between bg-gray-50 p-2 rounded';
+          el.innerHTML = `
+            <div>
+              <div class="font-medium">${item.name}</div>
+              <div class="text-xs text-gray-500">${formatRp(item.price)} x ${item.qty}</div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="px-2 py-1 text-sm bg-gray-200 rounded dec">-</button>
+              <button class="px-2 py-1 text-sm bg-gray-200 rounded inc">+</button>
+              <button class="px-2 py-1 text-sm bg-red-500 text-white rounded del">Hapus</button>
+            </div>
+          `;
+          // handlers
+          el.querySelector('.inc').addEventListener('click', () => {
+            cart[idx].qty++;
+            saveCart(cart);
+          });
+          el.querySelector('.dec').addEventListener('click', () => {
+            if (cart[idx].qty > 1) {
+              cart[idx].qty--;
+            } else {
+              cart.splice(idx, 1);
+            }
+            saveCart(cart);
+          });
+          el.querySelector('.del').addEventListener('click', () => {
+            cart.splice(idx, 1);
+            saveCart(cart);
+            showToast('Item dihapus');
+          });
+          cartList.appendChild(el);
         });
+      }
 
-        // Lightbox Functions
-        function openLightbox(src) {
-            document.getElementById("lightbox-img").src = src;
-            document.getElementById("lightbox").classList.add("active");
+      const total = getCartTotal(cart);
+      document.getElementById('cartTotal').innerText = formatRp(total);
+      document.getElementById('cartCount').innerText = cart.reduce((s, i) => s + i.qty, 0);
+    }
+
+    function addToCart(productIndex, qty = 1) {
+      const cart = loadCart();
+      const name = productNames[productIndex];
+      const price = defaultPrice;
+      const found = cart.find(i => i.name === name);
+      if (found) {
+        found.qty += qty;
+      } else {
+        cart.push({ name, price, qty });
+      }
+      saveCart(cart);
+      showToast('Ditambahkan ke keranjang');
+    }
+
+    document.getElementById('btnClearCart').addEventListener('click', () => {
+      if (confirm('Kosongkan keranjang?')) {
+        saveCart([]);
+      }
+    });
+
+    document.getElementById('btnCheckoutCart').addEventListener('click', () => {
+      openCheckoutCart();
+    });
+
+    updateCartUI();
+
+    /* ---------- Checkout (cart -> WA + receipt) ---------- */
+    const waBase = 'https://wa.link/gn2zxh'; // user provided shortlink
+    function openCheckoutCart() {
+      const cart = loadCart();
+      if (cart.length === 0) { showToast('Keranjang kosong'); return; }
+
+      const user = loadSession();
+      const checkoutContent = document.getElementById('checkoutContent');
+      const lines = cart.map(i => `- ${i.name} x${i.qty} (${formatRp(i.price*i.qty)})`);
+      const total = getCartTotal(cart);
+
+      checkoutContent.innerHTML = `
+        <div class="text-sm">
+          <div class="font-semibold mb-2">Ringkasan:</div>
+          <div class="text-xs text-gray-700 mb-2">${lines.join('<br>')}</div>
+          <div class="font-bold">Total: ${formatRp(total)}</div>
+          <div class="text-xs text-gray-500 mt-2">Nama: ${user ? user.name : '-'}</div>
+          <div class="text-xs text-gray-500">Email: ${user ? user.email : '-'}</div>
+        </div>
+      `;
+
+      // build message for WA (encoded)
+      let pesan = `Halo, saya ingin memesan:\\n`;
+      cart.forEach(i => {
+        pesan += `${i.name} x${i.qty} - ${formatRp(i.price*i.qty)}\\n`;
+      });
+      pesan += `Total: ${formatRp(total)}\\n`;
+      if (user) pesan += `Nama: ${user.name}\\nEmail: ${user.email}\\n`;
+      pesan += `Terima kasih.`;
+
+      const encoded = encodeURIComponent(pesan);
+      // attach to wa.link - many shortlink services accept ?text= param; if not, user can type manually
+      document.getElementById('btnWA').href = waBase + '?text=' + encoded;
+
+      document.getElementById('checkoutBox').classList.remove('hidden');
+    }
+
+    function closeCheckout() {
+      document.getElementById('checkoutBox').classList.add('hidden');
+    }
+
+    // When user clicks Pesan WA also open receipt printable and show print option
+    document.getElementById('btnWA').addEventListener('click', (e) => {
+      // prepare receipt content in printable area
+      const cart = loadCart();
+      const total = getCartTotal(cart);
+      const user = loadSession();
+      const receiptDiv = document.getElementById('receiptContent');
+      const date = new Date().toLocaleString('id-ID');
+      let html = `<div><div class="text-xs text-gray-600">Tanggal: ${date}</div>`;
+      html += `<div class="mt-2">`;
+      cart.forEach(i => {
+        html += `<div class="flex justify-between"><div>${i.name} x${i.qty}</div><div>${formatRp(i.price*i.qty)}</div></div>`;
+      });
+      html += `</div><div class="mt-3 font-bold">Total: ${formatRp(total)}</div>`;
+      if (user) {
+        html += `<div class="mt-2 text-xs">Nama: ${user.name}<br/>Email: ${user.email}</div>`;
+      }
+      html += `</div><div class="mt-4 text-xs">Silakan tunjukkan struk ini saat pembayaran.</div>`;
+      receiptDiv.innerHTML = html;
+
+      // small delay to ensure printable div updated (not async work beyond this response)
+      setTimeout(() => {
+        // show print dialog
+        // Note: we will not automatically call print here because clicking the WA link navigates away.
+        // Instead, open a confirmation to print now in a new window/tab with receipt content.
+        if (confirm('Ingin mencetak struk sekarang setelah pesan WA? (OK = Cetak, Cancel = Tidak)')) {
+          // open new window with printable receipt
+          const printWindow = window.open('', '_blank');
+          const docHtml = `
+            <html><head><title>Struk Pesanan</title>
+            <style>body{font-family:sans-serif;padding:20px} .line{display:flex;justify-content:space-between}</style>
+            </head><body>
+            <h2>Struk Pesanan - PetShop</h2>
+            ${document.getElementById('receiptContent').innerHTML}
+            <script>window.print();</script>
+            </body></html>`;
+          printWindow.document.write(docHtml);
+          printWindow.document.close();
+          // clear cart after checkout
+          saveCart([]);
+          closeCheckout();
+        } else {
+          // user canceled printing: still clear cart and close modal
+          saveCart([]);
+          closeCheckout();
         }
+      }, 200);
+      // no preventDefault: allow opening wa.link as well (user navigates)
+    });
 
-        document.getElementById("lightbox").addEventListener("click", () => {
-            document.getElementById("lightbox").classList.remove("active");
+    /* ---------- AUTH (frontend only) ---------- */
+    const btnAuth = document.getElementById('btnAuth');
+    btnAuth.addEventListener('click', () => {
+      document.getElementById('authModal').classList.remove('hidden');
+      showLogin();
+    });
+
+    function closeAuth() {
+      document.getElementById('authModal').classList.add('hidden');
+    }
+
+    function showRegister() {
+      document.getElementById('authTitle').innerText = 'Register';
+      document.getElementById('loginForm').classList.add('hidden');
+      document.getElementById('registerForm').classList.remove('hidden');
+    }
+
+    function showLogin() {
+      document.getElementById('authTitle').innerText = 'Login';
+      document.getElementById('loginForm').classList.remove('hidden');
+      document.getElementById('registerForm').classList.add('hidden');
+    }
+
+    // register
+    document.getElementById('registerForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim().toLowerCase();
+      const password = document.getElementById('regPassword').value;
+      if (!name || !email || !password) { showToast('Lengkapi form'); return; }
+
+      const users = loadUsers();
+      if (users.find(u => u.email === email)) {
+        alert('Email sudah terdaftar');
+        return;
+      }
+      users.push({ name, email, password });
+      saveUsers(users);
+      saveSession({ name, email });
+      closeAuth();
+      showToast('Registrasi berhasil');
+    });
+
+    // login
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+      const password = document.getElementById('loginPassword').value;
+      const users = loadUsers();
+      const user = users.find(u => u.email === email && u.password === password);
+      if (!user) {
+        alert('Email atau password salah');
+        return;
+      }
+      saveSession({ name: user.name, email: user.email });
+      closeAuth();
+      showToast('Login berhasil');
+    });
+
+    function updateUserUI() {
+      const sess = loadSession();
+      const userArea = document.getElementById('userArea');
+      if (!sess) {
+        userArea.innerHTML = '';
+        document.getElementById('btnAuth').innerText = 'Login / Register';
+      } else {
+        userArea.innerHTML = `<span class="mr-3">Hi, ${sess.name}</span>
+          <button id="btnLogout" class="px-2 py-1 bg-gray-200 text-sm rounded">Logout</button>`;
+        document.getElementById('btnAuth').innerText = 'Akun';
+        document.getElementById('btnLogout').addEventListener('click', () => {
+          saveSession(null);
+          showToast('Logout');
         });
+      }
+    }
 
-        // Checkout
-        function checkout(name, price) {
-            document.getElementById("coName").innerText = name;
-            document.getElementById("coPrice").innerText = price;
+    updateUserUI();
 
-            const pesan = encodeURIComponent(
-                `Halo, saya ingin memesan:\nProduk: ${name}\nHarga: ${price}`
-            );
+    /* ---------- small helpers ---------- */
+    // Close modals when clicking outside content
+    document.getElementById('authModal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('authModal')) closeAuth();
+    });
+    document.getElementById('checkoutBox').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('checkoutBox')) closeCheckout();
+    });
 
-            document.getElementById("btnWA").href =
-                `https://wa.me/6281296489069?text=${pesan}`;
-
-            document.getElementById("checkoutBox").classList.remove("hidden");
-        }
-
-        function closeCheckout() {
-            document.getElementById("checkoutBox").classList.add("hidden");
-        }
-    </script>
-
+    // initialize sample users for testing (optional)
+    if (!localStorage.getItem('ps_users')) {
+      saveUsers([{ name: 'Demo User', email: 'demo@petshop.test', password: 'demo123' }]);
+    }
+  </script>
 </body>
 </html>
-
